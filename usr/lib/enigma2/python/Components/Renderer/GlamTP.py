@@ -2,7 +2,6 @@
 #  Modded and recoded by MCelliotG for use in Glamour skins or standalone, added Python3 support
 #  If you use this Renderer for other skins and rename it, please keep the first and second line adding your credits below
 
-from __future__ import division
 import six
 from Components.Renderer.Renderer import Renderer
 from enigma import eLabel, eTimer
@@ -179,10 +178,7 @@ class GlamTP(VariableText, Renderer):
 	def moveTimerTextRun(self):
 		self.moveTimerText.stop()
 		if self.x > 0:
-			if six.PY3:
-				self.text = self.backtext[self.idx:].replace("\n", "").replace("\r", " ")
-			else:
-				self.text = self.backtext.decode("utf8", "ignore")[self.idx:].encode("utf8").replace("\n", "").replace("\r", " ")
+			self.text = self.backtext[self.idx:].replace("\n", "").replace("\r", " ")
 			self.idx = self.idx+1
 			self.x = self.x-1
 		if self.x == 0: 
@@ -193,9 +189,6 @@ class GlamTP(VariableText, Renderer):
 				while text_width > self.sizeX:
 					self.text = self.text[:-1]
 					text_width = self.instance.calculateSize().width()
-				if six.PY3:
-					self.text = "%s..." % self.text[:-3]
-				else:
-					self.text = "%s..." % self.text[:-3].decode("utf8", "ignore").encode("utf8")
+				self.text = "%s..." % self.text[:-3]
 		if self.status != "end":
 			self.moveTimerText.start(150)

@@ -54,10 +54,7 @@ class GlamRoll(VariableText, Renderer):
 	def moveTimerTextRun(self):
 		self.moveTimerText.stop()
 		if self.x > 0:
-			if six.PY3:
-				self.text = self.backtext[self.idx:].replace("\n", "").replace("\r", " ")
-			else:
-				self.text = self.backtext.decode("utf8", "ignore")[self.idx:].encode("utf8").replace("\n", "").replace("\r", " ")
+			self.text = self.backtext[self.idx:].replace("\n", "").replace("\r", " ")
 			self.idx = self.idx+1
 			self.x = self.x-1
 		if self.x == 0: 
@@ -68,9 +65,6 @@ class GlamRoll(VariableText, Renderer):
 				while text_width > self.sizeX:
 					self.text = self.text[:-1]
 					text_width = self.instance.calculateSize().width()
-				if six.PY3:
-					self.text = "%s..." % self.text[:-3]
-				else:
-					self.text = "%s..." % self.text[:-3].decode("utf8", "ignore").encode("utf8")
+				self.text = "%s..." % self.text[:-3]
 		if self.status != "end":
 			self.moveTimerText.start(150)

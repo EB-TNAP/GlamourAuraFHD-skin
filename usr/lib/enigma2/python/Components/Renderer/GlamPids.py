@@ -19,7 +19,7 @@ class GlamPids(VariableText, Renderer):
 
 	def connect(self, source):
 		Renderer.connect(self, source)
-		self.changed((self.CHANGED_DEFAULT))
+		self.changed(self.CHANGED_DEFAULT)
 
 
 	def changed(self, what):
@@ -39,23 +39,23 @@ class GlamPids(VariableText, Renderer):
 						if "%3a/" not in refstr and not curref.startswith("1:7:"):
 							ids = refstr.split(":")
 							hsid = str(int(ids[3], 16)).zfill(4)
-							dsid = str((ids[3])).zfill(4)
+							dsid = str(ids[3]).zfill(4)
 							if dsid < "0":
 								sid = ""
 							else:
-								sid = "SID:%s (%s) " % (dsid, hsid)
+								sid = "SID:{} ({}) ".format(dsid, hsid)
 							htsid = str(int(ids[4], 16)).zfill(4)
-							dtsid = str((ids[4])).zfill(4)
+							dtsid = str(ids[4]).zfill(4)
 							if dtsid < "0":
 								tsid = ""
 							else:
-								tsid = "TSID:%s (%s) " % (dtsid, htsid)
+								tsid = "TSID:{} ({}) ".format(dtsid, htsid)
 							honid = str(int(ids[5], 16)).zfill(4)
 							donid = str((ids[5]).zfill(4))
 							if donid < "0":
 								onid = ""
 							else:
-								onid = "ONID:%s (%s) " % (donid, honid)
+								onid = "ONID:{} ({}) ".format(donid, honid)
 					except:
 						pass
 					self.text = (sid + tsid + onid)
