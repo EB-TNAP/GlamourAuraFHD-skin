@@ -2,7 +2,6 @@
 #	Modded and recoded by MCelliotG for use in Glamour skins or standalone, added Python3 support
 #	If you use this Converter for other skins and rename it, please keep the lines above adding your credits below
 
-from __future__ import absolute_import, division
 from Components.Converter.Converter import Converter
 from Components.Element import cached
 from Components.Converter.Poll import Poll
@@ -113,9 +112,9 @@ class GlamourSpace(Poll, Converter):
 			if swapfree == "" and swaptotal == "":
 				return "N/A"
 			elif self.fullFormat:
-				return "Swap: %s %s %s" % (swapfree, swapcached, swaptotal)
+				return "Swap: {} {} {}".format(swapfree, swapcached, swaptotal)
 			else:
-			 return "Swap: %s %s" % (swapfree, swaptotal)
+			 return "Swap: {} {}".format(swapfree, swaptotal)
 
 		else:
 			entry = {self.MEMTOTAL: ("Mem", "Mem", "Ram"),
@@ -138,15 +137,15 @@ class GlamourSpace(Poll, Converter):
 			if lisf[0] == 0:
 				text = "%s: N/A" % entry[2]
 			elif self.shortFormat:
-				text = "%s: %s%%, %s Free" % (entry[2], lisf[3], self.getSizeStr(lisf[2]))
+				text = "{}: {}%, {} Free".format(entry[2], lisf[3], self.getSizeStr(lisf[2]))
 			elif self.mainFormat:
-				text = "%s: %s Free, %s Used, %s Total" % (entry[2], self.getSizeStr(lisf[2]), self.getSizeStr(lisf[1]), self.getSizeStr(lisf[0]))
+				text = "{}: {} Free, {} Used, {} Total".format(entry[2], self.getSizeStr(lisf[2]), self.getSizeStr(lisf[1]), self.getSizeStr(lisf[0]))
 			elif self.simpleFormat:
-				text = "%s: %s%% (%s Free, %s Total)" % (entry[2], lisf[3], self.getSizeStr(lisf[2]), self.getSizeStr(lisf[0]))
+				text = "{}: {}% ({} Free, {} Total)".format(entry[2], lisf[3], self.getSizeStr(lisf[2]), self.getSizeStr(lisf[0]))
 			elif self.fullFormat:
-				text = "%s: %s%% (%s Free, %s Used, %s Total)" % (entry[2], lisf[3], self.getSizeStr(lisf[2]), self.getSizeStr(lisf[1]), self.getSizeStr(lisf[0]))
+				text = "{}: {}% ({} Free, {} Used, {} Total)".format(entry[2], lisf[3], self.getSizeStr(lisf[2]), self.getSizeStr(lisf[1]), self.getSizeStr(lisf[0]))
 			else:
-				text = "%s: %s (%s Used, %s Free)" % (entry[2], self.getSizeStr(lisf[0]), self.getSizeStr(lisf[1]), self.getSizeStr(lisf[2]))
+				text = "{}: {} ({} Used, {} Free)".format(entry[2], self.getSizeStr(lisf[0]), self.getSizeStr(lisf[1]), self.getSizeStr(lisf[2]))
 		return text
 
 	@cached
@@ -201,7 +200,7 @@ class GlamourSpace(Poll, Converter):
 
 		def isMountPoint():
 			try:
-				with open("/proc/mounts", "r") as fd:
+				with open("/proc/mounts") as fd:
 					for line in fd:
 						l = line.split()
 						if len(l) > 1 and l[1] == path:

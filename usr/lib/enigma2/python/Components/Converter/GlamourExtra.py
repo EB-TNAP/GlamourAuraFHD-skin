@@ -3,7 +3,6 @@
 #	HDDtemp new detection added by betacentauri, many thanks!!!
 #	If you use this Converter for other skins and rename it, please keep the lines above adding your credits below
 
-from __future__ import absolute_import, division
 from Components.Converter.Converter import Converter 
 from Components.Element import cached 
 from Components.Converter.Poll import Poll
@@ -73,7 +72,7 @@ class GlamourExtra(Poll, Converter):
 			cpuload = ""
 			if os.path.exists("/proc/loadavg"):
 				try:
-					with open("/proc/loadavg", "r") as l:
+					with open("/proc/loadavg") as l:
 						load = l.readline(4)
 				except:
 					load = ""
@@ -111,7 +110,7 @@ class GlamourExtra(Poll, Converter):
 				return "CPU Temp: %s" % cputemp
 			if cputemp == "":
 				return systemp
-			return "%s CPU: %s" % (systemp, cputemp)
+			return "{} CPU: {}".format(systemp, cputemp)
 
 		elif self.type == self.HDDTEMP:
 			return self.hddtemp
@@ -142,26 +141,26 @@ class GlamourExtra(Poll, Converter):
 			fp = ""
 			try:
 				if os.path.exists("/proc/stb/fp/fan_speed"):
-					with open("/proc/stb/fp/fan_speed", "r") as fs:
+					with open("/proc/stb/fp/fan_speed") as fs:
 						fs = str(fs.readline().strip())
 				if os.path.exists("/proc/stb/fp/fan_vlt"):
-					with open("/proc/stb/fp/fan_vlt", "r") as fv:
+					with open("/proc/stb/fp/fan_vlt") as fv:
 						fv = str(int(fv.readline().strip(), 16))
 				if os.path.exists("/proc/stb/fp/fan_pwm"):
-					with open("/proc/stb/fp/fan_pwm", "r") as fp:
+					with open("/proc/stb/fp/fan_pwm") as fp:
 						fp = str(int(fp.readline().strip(), 16))
 			except:
 				pass
 			if fs == "":
 				return "Fan Info: N/A"
 			if self.shortFormat:
-				return "%s - %sV - P:%s" % (fs, fv, fp)
+				return "{} - {}V - P:{}".format(fs, fv, fp)
 			else:
-				return "Speed: %s V: %s PWM: %s" % (fs, fv, fp)
+				return "Speed: {} V: {} PWM: {}".format(fs, fv, fp)
 
 		elif self.type == self.UPTIME:
 			try:
-				with open("/proc/uptime", "r") as up:
+				with open("/proc/uptime") as up:
 					uptime_info = up.read().split()
 			except:
 				return "Uptime: N/A"
@@ -177,7 +176,7 @@ class GlamourExtra(Poll, Converter):
 				seconds = str(int(total_seconds % MINUTE))
 				uptime = ""
 				if self.shortFormat:
-					uptime = "%sd %sh %sm %ss" % (days, hours, minutes, seconds)
+					uptime = "{}d {}h {}m {}s".format(days, hours, minutes, seconds)
 				else:
 					if days > "0":
 						uptime += days + " " + (days == "1" and "day" or "days") + ", "

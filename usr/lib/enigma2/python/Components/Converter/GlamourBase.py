@@ -3,7 +3,6 @@
 #	codecs map based on PliExtraInfo
 #	If you use this Converter for other skins and rename it, please keep the lines above adding your credits below
 
-from __future__ import absolute_import, division
 from Components.Converter.Converter import Converter
 from Components.Element import cached
 from Components.Converter.Poll import Poll 
@@ -272,7 +271,7 @@ satnames = (
 )
 
 
-class GlamourBase(Poll, Converter, object):
+class GlamourBase(Poll, Converter):
 	FREQINFO = 0
 	ORBITAL = 1
 	RESCODEC = 2
@@ -415,7 +414,7 @@ class GlamourBase(Poll, Converter, object):
 	def videowidth(self, info):
 		width = 0
 		if os.path.exists("/proc/stb/vmpeg/0/xres"):
-			with open("/proc/stb/vmpeg/0/xres", "r") as w:
+			with open("/proc/stb/vmpeg/0/xres") as w:
 				try:
 					width = int(w.read(),16)
 				except:
@@ -428,7 +427,7 @@ class GlamourBase(Poll, Converter, object):
 	def videoheight(self, info):
 		height = 0
 		if os.path.exists("/proc/stb/vmpeg/0/yres"):
-			with open("/proc/stb/vmpeg/0/yres", "r") as h:
+			with open("/proc/stb/vmpeg/0/yres") as h:
 				try:
 					height = int(h.read(),16)
 				except:
@@ -441,7 +440,7 @@ class GlamourBase(Poll, Converter, object):
 	def proginfo(self, info):
 		progrs = ""
 		if os.path.exists("/proc/stb/vmpeg/0/progressive"):
-			with open("/proc/stb/vmpeg/0/progressive", "r") as prog:
+			with open("/proc/stb/vmpeg/0/progressive") as prog:
 				try:
 					progrs = "p" if int(prog.read(),16) else "i"
 				except:
@@ -453,7 +452,7 @@ class GlamourBase(Poll, Converter, object):
 		yresol = str(self.videoheight(info))
 		progrs = self.proginfo(info)
 		if (xresol > "0"):
-			videosize = "%sx%s%s" % (xresol, yresol, progrs)
+			videosize = "{}x{}{}".format(xresol, yresol, progrs)
 			return videosize
 		else:
 			return ""
@@ -461,7 +460,7 @@ class GlamourBase(Poll, Converter, object):
 	def framerate(self, info):
 		fps = 0
 		if os.path.exists("/proc/stb/vmpeg/0/framerate"):
-			with open("/proc/stb/vmpeg/0/framerate", "r") as fp:
+			with open("/proc/stb/vmpeg/0/framerate") as fp:
 				try:
 					fps = int(fp.read())
 				except:
@@ -530,7 +529,7 @@ class GlamourBase(Poll, Converter, object):
 		return str(tp.get("tuner_type")) or ""
 
 	def terrafec(self, tpinfo):
-		return "LP:%s HP:%s GI:%s" % (tpinfo.get("code_rate_lp"), tpinfo.get("code_rate_hp"), tpinfo.get("guard_interval"))
+		return "LP:{} HP:{} GI:{}".format(tpinfo.get("code_rate_lp"), tpinfo.get("code_rate_hp"), tpinfo.get("guard_interval"))
 
 	def plpid(self, tpinfo):
 		plpid = str(tpinfo.get("plp_id", 0))
@@ -665,7 +664,7 @@ class GlamourBase(Poll, Converter, object):
 			onid = ""
 		else:
 			onid = "ONID:" + str(onid).zfill(4)
-		pidinfo = "%s %s %s %s %s %s %s" % (vpid, apid, sid, pcrpid, pmtpid, tsid, onid)
+		pidinfo = "{} {} {} {} {} {} {}".format(vpid, apid, sid, pcrpid, pmtpid, tsid, onid)
 		return pidinfo
 
 
@@ -705,7 +704,7 @@ class GlamourBase(Poll, Converter, object):
 			onid = ""
 		else:
 			onid = "ONID:" + str(hex(onid)[2:]).upper().zfill(4)
-		pidhexinfo = "%s %s %s %s %s %s %s" % (vpid, apid, sid, pcrpid, pmtpid, tsid, onid)
+		pidhexinfo = "{} {} {} {} {} {} {}".format(vpid, apid, sid, pcrpid, pmtpid, tsid, onid)
 		return pidhexinfo
 
 
@@ -731,20 +730,20 @@ class GlamourBase(Poll, Converter, object):
 				return self.streamurl()
 			else:
 				if "DVB-S" in self.tunertype(tp):
-					satf = "%s %s %s %s %s %s" % (self.system(tpinfo), self.modulation(tpinfo), self.frequency(tp), self.polarization(tpinfo), self.symbolrate(tp), self.fecinfo(tpinfo))
+					satf = "{} {} {} {} {} {}".format(self.system(tpinfo), self.modulation(tpinfo), self.frequency(tp), self.polarization(tpinfo), self.symbolrate(tp), self.fecinfo(tpinfo))
 					if "is_id" in tpinfo or "pls_code" in tpinfo or "pls_mode" in tpinfo or "t2mi_plp_id" in tp:
 						return sp(satf) + self.multistream(tpinfo) + self.t2mi_info(tpinfo)
 					else:
 						return satf
 				elif "DVB-C" in self.tunertype(tp):
-					return "%s Mhz %s SR: %s FEC: %s" % (self.frequency(tp), self.modulation(tpinfo), self.symbolrate(tp), self.fecinfo(tpinfo))
+					return "{} Mhz {} SR: {} FEC: {}".format(self.frequency(tp), self.modulation(tpinfo), self.symbolrate(tp), self.fecinfo(tpinfo))
 				elif self.tunertype(tp) == "DVB-T":
-					terf = "%s (%s Mhz)  %s  %s" % (self.channel(tpinfo), self.terrafreq(tp), self.constellation(tpinfo), self.terrafec(tpinfo))
+					terf = "{} ({} Mhz)  {}  {}".format(self.channel(tpinfo), self.terrafreq(tp), self.constellation(tpinfo), self.terrafec(tpinfo))
 					return terf
 				elif self.tunertype(tp) == "DVB-T2":
 					return sp(terf) + self.plpid(tpinfo)
 				elif "ATSC" in self.tunertype(tp):
-					return "%s (Mhz) %s" % (self.terrafreq(tp), self.modulation(tpinfo))
+					return "{} (Mhz) {}".format(self.terrafreq(tp), self.modulation(tpinfo))
 				return ""
 
 		elif self.type == self.ORBITAL:
@@ -753,7 +752,7 @@ class GlamourBase(Poll, Converter, object):
 				return self.streamtype()
 			else:
 				if "DVB-S" in self.tunertype(tp):
-					return "%s (%s)" % (self.satname(tp), self.orbital(tp))
+					return "{} ({})".format(self.satname(tp), self.orbital(tp))
 				elif "DVB-C" in self.tunertype(tp) or "DVB-T" in self.tunertype(tp) or "ATSC" in self.tunertype(tp):
 					return self.system(tpinfo)
 				return ""
@@ -771,7 +770,7 @@ class GlamourBase(Poll, Converter, object):
 			vidsize = self.videosize(info)
 			fps = self.framerate(info)
 			vidcodec = self.videocodec(info)
-			return "%s   %s   %s" % (vidsize, fps, vidcodec)
+			return "{}   {}   {}".format(vidsize, fps, vidcodec)
 
 		elif self.type == self.PIDINFO:
 			return self.pidstring(info)

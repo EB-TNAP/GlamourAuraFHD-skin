@@ -7,7 +7,7 @@ from Components.Element import cached
 import os.path
 
 
-class GlamourTuners(Converter, object):
+class GlamourTuners(Converter):
 	TUNER_A = 0
 	TUNER_B = 1
 	TUNER_C = 2
@@ -102,10 +102,10 @@ class GlamourTuners(Converter, object):
 		niminfo = [ ]
 		if os.path.exists("/proc/bus/nim_sockets"):
 			try:
-				with open("/proc/bus/nim_sockets", "r") as niminfo:
+				with open("/proc/bus/nim_sockets") as niminfo:
 					niminfo = niminfo.readlines()
 					niminfo = " ".join(map(str, niminfo))
-			except IOError:
+			except OSError:
 				return
 			return str(niminfo)
 

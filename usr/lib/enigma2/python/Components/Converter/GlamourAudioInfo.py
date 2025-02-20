@@ -32,7 +32,7 @@ except:
 	pass
 
 
-class GlamourAudioInfo(Poll, Converter, object):
+class GlamourAudioInfo(Poll, Converter):
 	GET_AUDIO_ICON = 0
 	GET_AUDIO_CODEC = 1
 
@@ -95,7 +95,7 @@ class GlamourAudioInfo(Poll, Converter, object):
 				type = AUDIO_FORMATS[self.audio_info.getType()][1];
 				description_str = type
 				channels = self.audio_info.getDescription();
-				channels_str = re.search("([0-9\.]+)", channels)
+				channels_str = re.search(r"([0-9\.]+)", channels)
 				if channels_str:
 					description_str = description_str + " " + channels_str.group(1)
 			except:
@@ -114,7 +114,7 @@ class GlamourAudioInfo(Poll, Converter, object):
 		return description_str
 
 	def get_short(self, audioName):
-		for return_codec, codecs in sorted(six.iteritems(self.codecs)):
+		for return_codec, codecs in sorted(self.codecs.items()):
 			for codec in codecs:
 				if codec in audioName:
 					codec = return_codec.split("_")[1]

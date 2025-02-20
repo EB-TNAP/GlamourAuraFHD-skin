@@ -2,12 +2,11 @@
 #	Modded and recoded by MCelliotG for use in Glamour skins or standalone, added Python3 support
 #	If you use this Converter for other skins and rename it, please keep the lines above adding your credits below
 
-from __future__ import division
 from Components.Converter.Converter import Converter
 from Components.Converter.Poll import Poll
 from Components.Element import cached
 
-class GlamCPU(Converter, object):
+class GlamCPU(Converter):
 	CPU_ALL = -2
 	CPU_TOTAL = -1
 
@@ -75,7 +74,7 @@ class GlamCPU(Converter, object):
 	range = 100
 
 
-class CpuUsageMonitor(Poll, object):
+class CpuUsageMonitor(Poll):
 
 	def __init__(self):
 		Poll.__init__(self)
@@ -89,7 +88,7 @@ class CpuUsageMonitor(Poll, object):
 	def getCpusInfo(self):
 		res = []
 		try:
-			fd = open("/proc/stat", "r")
+			fd = open("/proc/stat")
 			for l in fd:
 				if l.find("cpu") == 0:
 					total = busy = 0

@@ -21,7 +21,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
-from __future__ import absolute_import
 import os
 import math
 import gettext
@@ -49,7 +48,7 @@ if weather_location == 'en-EN':
 time_update = 30
 time_update_ms = 3000
 
-class GlamMSNWeather(Poll, Converter, object):
+class GlamMSNWeather(Poll, Converter):
 
 	VFD = 1
 	DATE = 2
@@ -395,7 +394,7 @@ class GlamMSNWeather(Poll, Converter, object):
 		noneweather.close()
 
 	def get_xmlfile(self):
-		self.iConsole.ePopen("wget -P /tmp -T2 'http://weather.service.msn.com/data.aspx?weadegreetype=%s&culture=%s&weasearchstr=%s&src=outlook' -O /tmp/weathermsn2.xml" % (degreetype, weather_location, weather_city), self.control_xml)
+		self.iConsole.ePopen("wget -P /tmp -T2 'http://weather.service.msn.com/data.aspx?weadegreetype={}&culture={}&weasearchstr={}&src=outlook' -O /tmp/weathermsn2.xml".format(degreetype, weather_location, weather_city), self.control_xml)
 
 	@cached
 	def getText(self):
@@ -514,10 +513,7 @@ class GlamMSNWeather(Poll, Converter, object):
 			'Precip4': '',\
 			}
 #
-		if six.PY2:
-			wdata = open("/tmp/weathermsn2.xml")
-		else:
-			wdata = open("/tmp/weathermsn2.xml", encoding="utf-8")
+		wdata = open("/tmp/weathermsn2.xml", encoding="utf-8")
 		if os.path.exists("/tmp/weathermsn2.xml"):
 			if int((time.time() - os.stat("/tmp/weathermsn2.xml").st_mtime)/60) >= time_update:
 				self.get_xmlfile()
@@ -543,16 +539,16 @@ class GlamMSNWeather(Poll, Converter, object):
 					longitude = '%s' %  line.split(' long')[1].split('"')[1].replace(',', '.')
 				if "<current" in line:
 					if not line.split('temperature')[1].split('"')[1][0] == '-' and not line.split('temperature')[1].split('"')[1][0] == '0':
-						msnweather['Temp'] = '+' + line.split('temperature')[1].split('"')[1] + '%s%s' % (six.ensure_str(six.unichr(176)), degreetype)
+						msnweather['Temp'] = '+' + line.split('temperature')[1].split('"')[1] + '{}{}'.format(six.ensure_str(chr(176)), degreetype)
 					else:
-						msnweather['Temp'] = line.split('temperature')[1].split('"')[1] + '%s%s' % (six.ensure_str(six.unichr(176)), degreetype)
+						msnweather['Temp'] = line.split('temperature')[1].split('"')[1] + '{}{}'.format(six.ensure_str(chr(176)), degreetype)
 					if not line.split('feelslike')[1].split('"')[1][0] == '-' and not line.split('feelslike')[1].split('"')[1][0] == '0':
-						msnweather['Feelslike'] = '+' + line.split('feelslike')[1].split('"')[1] + '%s%s' % (six.ensure_str(six.unichr(176)), degreetype)
+						msnweather['Feelslike'] = '+' + line.split('feelslike')[1].split('"')[1] + '{}{}'.format(six.ensure_str(chr(176)), degreetype)
 					else:
-						msnweather['Feelslike'] = line.split('feelslike')[1].split('"')[1] + '%s%s' % (six.ensure_str(six.unichr(176)), degreetype)
+						msnweather['Feelslike'] = line.split('feelslike')[1].split('"')[1] + '{}{}'.format(six.ensure_str(chr(176)), degreetype)
 					msnweather['Picon'] = line.split('skycode')[1].split('"')[1]
 					msnweather['Skytext'] = line.split('skytext')[1].split('"')[1]
-					msnweather['Humidity'] = line.split('humidity')[1].split('"')[1] + ' %s' % six.ensure_str(six.unichr(37))
+					msnweather['Humidity'] = line.split('humidity')[1].split('"')[1] + ' %s' % six.ensure_str(chr(37))
 					try:
 						msnweather['Wind'] = line.split('winddisplay')[1].split('"')[1].split(' ')[2]
 					except:
@@ -599,113 +595,113 @@ class GlamMSNWeather(Poll, Converter, object):
 # Day 0
 				if "<forecast" in line:
 					if not line.split('low')[1].split('"')[1][0] == '-' and not line.split('low')[1].split('"')[1][0] == '0':
-						low0weather = '+' + line.split('low')[1].split('"')[1] + '%s' % six.ensure_str(six.unichr(176))
-						msnweather['Lowtemp0'] = '%s%s' % (low0weather, degreetype)
+						low0weather = '+' + line.split('low')[1].split('"')[1] + '%s' % six.ensure_str(chr(176))
+						msnweather['Lowtemp0'] = '{}{}'.format(low0weather, degreetype)
 					else:
-						low0weather = line.split('low')[1].split('"')[1] + '%s' % six.ensure_str(six.unichr(176))
-						msnweather['Lowtemp0'] = '%s%s' % (low0weather, degreetype)
+						low0weather = line.split('low')[1].split('"')[1] + '%s' % six.ensure_str(chr(176))
+						msnweather['Lowtemp0'] = '{}{}'.format(low0weather, degreetype)
 					if not line.split('high')[1].split('"')[1][0] == '-' and not line.split('high')[1].split('"')[1][0] == '0':
-						hi0weather = '+' + line.split('high')[1].split('"')[1] + '%s' % six.ensure_str(six.unichr(176))
-						msnweather['Hightemp0'] = '%s%s' % (hi0weather, degreetype)
+						hi0weather = '+' + line.split('high')[1].split('"')[1] + '%s' % six.ensure_str(chr(176))
+						msnweather['Hightemp0'] = '{}{}'.format(hi0weather, degreetype)
 					else:
-						hi0weather = line.split('high')[1].split('"')[1] + '%s' % six.ensure_str(six.unichr(176))
-						msnweather['Hightemp0'] = '%s%s' % (hi0weather, degreetype)
-					msnweather['Temp0'] = '%s / %s' % (hi0weather, low0weather)
+						hi0weather = line.split('high')[1].split('"')[1] + '%s' % six.ensure_str(chr(176))
+						msnweather['Hightemp0'] = '{}{}'.format(hi0weather, degreetype)
+					msnweather['Temp0'] = '{} / {}'.format(hi0weather, low0weather)
 					msnweather['Picon0'] = line.split('skycodeday')[1].split('"')[1]
 					msnweather['Date0'] = line.split('date')[2].split('"')[1].split('-')[2].strip() + '.' + line.split('date')[2].split('"')[1].split('-')[1].strip() + '.' + line.split('date')[2].split('"')[1].split('-')[0].strip()
 					msnweather['Shortdate0'] = line.split('shortday')[2].split('"')[1] + ' ' + line.split('date')[2].split('"')[1].split('-')[2].strip()
 					msnweather['Day0'] = line.split(' day')[2].split('"')[1]
 					msnweather['Shortday0'] = line.split('shortday')[2].split('"')[1]
 					msnweather['Skytext0'] = line.split('skytextday')[1].split('"')[1]
-					msnweather['Precip0'] = line.split('precip')[1].split('"')[1] + ' %s' % six.ensure_str(six.unichr(37))
+					msnweather['Precip0'] = line.split('precip')[1].split('"')[1] + ' %s' % six.ensure_str(chr(37))
 # Day 1
 				if "<forecast" in line:
 					if not line.split('low')[2].split('"')[1][0] == '-' and not line.split('low')[2].split('"')[1][0] == '0':
-						low1weather = '+' + line.split('low')[2].split('"')[1] + '%s' % six.ensure_str(six.unichr(176))
-						msnweather['Lowtemp1'] = '%s%s' % (low1weather, degreetype)
+						low1weather = '+' + line.split('low')[2].split('"')[1] + '%s' % six.ensure_str(chr(176))
+						msnweather['Lowtemp1'] = '{}{}'.format(low1weather, degreetype)
 					else:
-						low1weather = line.split('low')[2].split('"')[1] + '%s' % six.ensure_str(six.unichr(176))
-						msnweather['Lowtemp1'] = '%s%s' % (low1weather, degreetype)
+						low1weather = line.split('low')[2].split('"')[1] + '%s' % six.ensure_str(chr(176))
+						msnweather['Lowtemp1'] = '{}{}'.format(low1weather, degreetype)
 					if not line.split('high')[2].split('"')[1][0] == '-' and not line.split('high')[2].split('"')[1][0] == '0':
-						hi1weather = '+' + line.split('high')[2].split('"')[1] + '%s' % six.ensure_str(six.unichr(176))
-						msnweather['Hightemp1'] = '%s%s' % (hi1weather, degreetype)
+						hi1weather = '+' + line.split('high')[2].split('"')[1] + '%s' % six.ensure_str(chr(176))
+						msnweather['Hightemp1'] = '{}{}'.format(hi1weather, degreetype)
 					else:
-						hi1weather = line.split('high')[2].split('"')[1] + '%s' % six.ensure_str(six.unichr(176))
-						msnweather['Hightemp1'] = '%s%s' % (hi1weather, degreetype)
-					msnweather['Temp1'] = '%s / %s' % (hi1weather, low1weather)
+						hi1weather = line.split('high')[2].split('"')[1] + '%s' % six.ensure_str(chr(176))
+						msnweather['Hightemp1'] = '{}{}'.format(hi1weather, degreetype)
+					msnweather['Temp1'] = '{} / {}'.format(hi1weather, low1weather)
 					msnweather['Picon1'] = line.split('skycodeday')[2].split('"')[1]
 					msnweather['Date1'] = line.split('date')[3].split('"')[1].split('-')[2].strip() + '.' + line.split('date')[3].split('"')[1].split('-')[1].strip() + '.' + line.split('date')[3].split('"')[1].split('-')[0].strip()
 					msnweather['Shortdate1'] = line.split('shortday')[3].split('"')[1] + ' ' + line.split('date')[3].split('"')[1].split('-')[2].strip()
 					msnweather['Day1'] = line.split(' day')[3].split('"')[1]
 					msnweather['Shortday1'] = line.split('shortday')[3].split('"')[1]
 					msnweather['Skytext1'] = line.split('skytextday')[2].split('"')[1]
-					msnweather['Precip1'] = line.split('precip')[2].split('"')[1] + ' %s' % six.ensure_str(six.unichr(37))
+					msnweather['Precip1'] = line.split('precip')[2].split('"')[1] + ' %s' % six.ensure_str(chr(37))
 # Day 2
 				if "<forecast" in line:
 					if not line.split('low')[3].split('"')[1][0] == '-' and not line.split('low')[3].split('"')[1][0] == '0':
-						low2weather = '+' + line.split('low')[3].split('"')[1] + '%s' % six.ensure_str(six.unichr(176))
-						msnweather['Lowtemp2'] = '%s%s' % (low2weather, degreetype)
+						low2weather = '+' + line.split('low')[3].split('"')[1] + '%s' % six.ensure_str(chr(176))
+						msnweather['Lowtemp2'] = '{}{}'.format(low2weather, degreetype)
 					else:
-						low2weather = line.split('low')[3].split('"')[1] + '%s' % six.ensure_str(six.unichr(176))
-						msnweather['Lowtemp2'] = '%s%s' % (low2weather, degreetype)
+						low2weather = line.split('low')[3].split('"')[1] + '%s' % six.ensure_str(chr(176))
+						msnweather['Lowtemp2'] = '{}{}'.format(low2weather, degreetype)
 					if not line.split('high')[3].split('"')[1][0] == '-' and not line.split('high')[3].split('"')[1][0] == '0':
-						hi2weather = '+' + line.split('high')[3].split('"')[1] + '%s' % six.ensure_str(six.unichr(176))
-						msnweather['Hightemp2'] = '%s%s' % (hi2weather, degreetype)
+						hi2weather = '+' + line.split('high')[3].split('"')[1] + '%s' % six.ensure_str(chr(176))
+						msnweather['Hightemp2'] = '{}{}'.format(hi2weather, degreetype)
 					else:
-						hi2weather = line.split('high')[3].split('"')[1] + '%s' % six.ensure_str(six.unichr(176))
-						msnweather['Hightemp2'] = '%s%s' % (hi2weather, degreetype)
-					msnweather['Temp2'] = '%s / %s' % (hi2weather, low2weather)
+						hi2weather = line.split('high')[3].split('"')[1] + '%s' % six.ensure_str(chr(176))
+						msnweather['Hightemp2'] = '{}{}'.format(hi2weather, degreetype)
+					msnweather['Temp2'] = '{} / {}'.format(hi2weather, low2weather)
 					msnweather['Picon2'] = line.split('skycodeday')[3].split('"')[1]
 					msnweather['Date2'] = line.split('date')[4].split('"')[1].split('-')[2].strip() + '.' + line.split('date')[4].split('"')[1].split('-')[1].strip() + '.' + line.split('date')[4].split('"')[1].split('-')[0].strip()
 					msnweather['Shortdate2'] = line.split('shortday')[4].split('"')[1] + ' ' + line.split('date')[4].split('"')[1].split('-')[2].strip()
 					msnweather['Day2'] = line.split(' day')[4].split('"')[1]
 					msnweather['Shortday2'] = line.split('shortday')[4].split('"')[1]
 					msnweather['Skytext2'] = line.split('skytextday')[3].split('"')[1]
-					msnweather['Precip2'] = line.split('precip')[3].split('"')[1] + ' %s' % six.ensure_str(six.unichr(37))
+					msnweather['Precip2'] = line.split('precip')[3].split('"')[1] + ' %s' % six.ensure_str(chr(37))
 # Day 3
 				if "<forecast" in line:
 					if not line.split('low')[4].split('"')[1][0] == '-' and not line.split('low')[4].split('"')[1][0] == '0':
-						low3weather = '+' + line.split('low')[4].split('"')[1] + '%s' % six.ensure_str(six.unichr(176))
-						msnweather['Lowtemp3'] = '%s%s' % (low3weather, degreetype)
+						low3weather = '+' + line.split('low')[4].split('"')[1] + '%s' % six.ensure_str(chr(176))
+						msnweather['Lowtemp3'] = '{}{}'.format(low3weather, degreetype)
 					else:
-						low3weather = line.split('low')[4].split('"')[1] + '%s' % six.ensure_str(six.unichr(176))
-						msnweather['Lowtemp3'] = '%s%s' % (low3weather, degreetype)
+						low3weather = line.split('low')[4].split('"')[1] + '%s' % six.ensure_str(chr(176))
+						msnweather['Lowtemp3'] = '{}{}'.format(low3weather, degreetype)
 					if not line.split('high')[4].split('"')[1][0] == '-' and not line.split('high')[4].split('"')[1][0] == '0':
-						hi3weather = '+' + line.split('high')[4].split('"')[1] + '%s' % six.ensure_str(six.unichr(176))
-						msnweather['Hightemp3'] = '%s%s' % (hi3weather, degreetype)
+						hi3weather = '+' + line.split('high')[4].split('"')[1] + '%s' % six.ensure_str(chr(176))
+						msnweather['Hightemp3'] = '{}{}'.format(hi3weather, degreetype)
 					else:
-						hi3weather = line.split('high')[4].split('"')[1] + '%s' % six.ensure_str(six.unichr(176))
-						msnweather['Hightemp3'] = '%s%s' % (hi3weather, degreetype)
-					msnweather['Temp3'] = '%s / %s' % (hi3weather, low3weather)
+						hi3weather = line.split('high')[4].split('"')[1] + '%s' % six.ensure_str(chr(176))
+						msnweather['Hightemp3'] = '{}{}'.format(hi3weather, degreetype)
+					msnweather['Temp3'] = '{} / {}'.format(hi3weather, low3weather)
 					msnweather['Picon3'] = line.split('skycodeday')[4].split('"')[1]
 					msnweather['Date3'] = line.split('date')[5].split('"')[1].split('-')[2].strip() + '.' + line.split('date')[5].split('"')[1].split('-')[1].strip() + '.' + line.split('date')[5].split('"')[1].split('-')[0].strip()
 					msnweather['Shortdate3'] = line.split('shortday')[5].split('"')[1] + ' ' + line.split('date')[5].split('"')[1].split('-')[2].strip()
 					msnweather['Day3'] = line.split(' day')[5].split('"')[1]
 					msnweather['Shortday3'] = line.split('shortday')[5].split('"')[1]
 					msnweather['Skytext3'] = line.split('skytextday')[4].split('"')[1]
-					msnweather['Precip3'] = line.split('precip')[4].split('"')[1] + ' %s' % six.ensure_str(six.unichr(37))
+					msnweather['Precip3'] = line.split('precip')[4].split('"')[1] + ' %s' % six.ensure_str(chr(37))
 # Day 4
 				if "<forecast" in line:
 					if not line.split('low')[5].split('"')[1][0] == '-' and not line.split('low')[5].split('"')[1][0] == '0':
-						low4weather = '+' + line.split('low')[5].split('"')[1] + '%s' % six.ensure_str(six.unichr(176))
-						msnweather['Lowtemp4'] = '%s%s' % (low4weather, degreetype)
+						low4weather = '+' + line.split('low')[5].split('"')[1] + '%s' % six.ensure_str(chr(176))
+						msnweather['Lowtemp4'] = '{}{}'.format(low4weather, degreetype)
 					else:
-						low4weather = line.split('low')[5].split('"')[1] + '%s' % six.ensure_str(six.unichr(176))
-						msnweather['Lowtemp4'] = '%s%s' % (low4weather, degreetype)
+						low4weather = line.split('low')[5].split('"')[1] + '%s' % six.ensure_str(chr(176))
+						msnweather['Lowtemp4'] = '{}{}'.format(low4weather, degreetype)
 					if not line.split('high')[5].split('"')[1][0] == '-' and not line.split('high')[5].split('"')[1][0] == '0':
-						hi4weather = '+' + line.split('high')[5].split('"')[1] + '%s' % six.ensure_str(six.unichr(176))
-						msnweather['Hightemp4'] = '%s%s' % (hi4weather, degreetype)
+						hi4weather = '+' + line.split('high')[5].split('"')[1] + '%s' % six.ensure_str(chr(176))
+						msnweather['Hightemp4'] = '{}{}'.format(hi4weather, degreetype)
 					else:
-						hi4weather = line.split('high')[5].split('"')[1] + '%s' % six.ensure_str(six.unichr(176))
-						msnweather['Hightemp4'] = '%s%s' % (hi4weather, degreetype)
-					msnweather['Temp4'] = '%s / %s' % (hi4weather, low4weather)
+						hi4weather = line.split('high')[5].split('"')[1] + '%s' % six.ensure_str(chr(176))
+						msnweather['Hightemp4'] = '{}{}'.format(hi4weather, degreetype)
+					msnweather['Temp4'] = '{} / {}'.format(hi4weather, low4weather)
 					msnweather['Picon4'] = line.split('skycodeday')[5].split('"')[1]
 					msnweather['Date4'] = line.split('date')[6].split('"')[1].split('-')[2].strip() + '.' + line.split('date')[6].split('"')[1].split('-')[1].strip() + '.' + line.split('date')[6].split('"')[1].split('-')[0].strip()
 					msnweather['Shortdate4'] = line.split('shortday')[6].split('"')[1] + ' ' + line.split('date')[6].split('"')[1].split('-')[2].strip()
 					msnweather['Day4'] = line.split(' day')[6].split('"')[1]
 					msnweather['Shortday4'] = line.split('shortday')[6].split('"')[1]
 					msnweather['Skytext4'] = line.split('skytextday')[5].split('"')[1]
-					msnweather['Precip4'] = line.split('precip')[5].split('"')[1] + ' %s' % six.ensure_str(six.unichr(37))
+					msnweather['Precip4'] = line.split('precip')[5].split('"')[1] + ' %s' % six.ensure_str(chr(37))
 			except:
 				pass
 # Astro
@@ -2100,44 +2096,44 @@ class GlamMSNWeather(Poll, Converter, object):
 			Mdist = MA = phase = light = '-'
 #
 		msnweather['Julianday'] = '%s' % JD
-		msnweather['Sunrise'] = '%s%s%s%s' % (SRh, six.ensure_str(six.unichr(58)), SRx, SRm)
-		msnweather['Sunset'] = '%s%s%s%s' % (SSh, six.ensure_str(six.unichr(58)), SSx, SSm)
-		msnweather['Solstice'] = '%s%s%s%s' % (SCh, six.ensure_str(six.unichr(58)), SCx, SCm)
-		msnweather['Mercuryrise'] = '%s%s%s%s' % (P1Rh, six.ensure_str(six.unichr(58)), P1Rx, P1Rm)
-		msnweather['Mercuryset'] = '%s%s%s%s' % (P1Sh, six.ensure_str(six.unichr(58)), P1Sx, P1Sm)
-		msnweather['Mercuryculmination'] = '%s%s%s%s' % (P1Ch, six.ensure_str(six.unichr(58)), P1Cx, P1Cm)
-		msnweather['Mercuryazimuth'] = '%s %s' % (P1A, six.ensure_str(six.unichr(176)))
-		msnweather['Venusrise'] = '%s%s%s%s' % (P2Rh, six.ensure_str(six.unichr(58)), P2Rx, P2Rm)
-		msnweather['Venusset'] = '%s%s%s%s' % (P2Sh, six.ensure_str(six.unichr(58)), P2Sx, P2Sm)
-		msnweather['Venusculmination'] = '%s%s%s%s' % (P2Ch, six.ensure_str(six.unichr(58)), P2Cx, P2Cm)
-		msnweather['Venusazimuth'] = '%s %s' % (P2A, six.ensure_str(six.unichr(176)))
-		msnweather['Marsrise'] = '%s%s%s%s' % (P4Rh, six.ensure_str(six.unichr(58)), P4Rx, P4Rm)
-		msnweather['Marsset'] = '%s%s%s%s' % (P4Sh, six.ensure_str(six.unichr(58)), P4Sx, P4Sm)
-		msnweather['Marsculmination'] = '%s%s%s%s' % (P4Ch, six.ensure_str(six.unichr(58)), P4Cx, P4Cm)
-		msnweather['Marsazimuth'] = '%s %s' % (P4A, six.ensure_str(six.unichr(176)))
-		msnweather['Jupiterrise'] = '%s%s%s%s' % (P5Rh, six.ensure_str(six.unichr(58)), P5Rx, P5Rm)
-		msnweather['Jupiterset'] = '%s%s%s%s' % (P5Sh, six.ensure_str(six.unichr(58)), P5Sx, P5Sm)
-		msnweather['Jupiterculmination'] = '%s%s%s%s' % (P5Ch, six.ensure_str(six.unichr(58)), P5Cx, P5Cm)
-		msnweather['Jupiterazimuth'] = '%s %s' % (P5A, six.ensure_str(six.unichr(176)))
-		msnweather['Saturnrise'] = '%s%s%s%s' % (P6Rh, six.ensure_str(six.unichr(58)), P6Rx, P6Rm)
-		msnweather['Saturnset'] = '%s%s%s%s' % (P6Sh, six.ensure_str(six.unichr(58)), P6Sx, P6Sm)
-		msnweather['Saturnculmination'] = '%s%s%s%s' % (P6Ch, six.ensure_str(six.unichr(58)), P6Cx, P6Cm)
-		msnweather['Saturnazimuth'] = '%s %s' % (P6A, six.ensure_str(six.unichr(176)))
-		msnweather['Uranusrise'] = '%s%s%s%s' % (P7Rh, six.ensure_str(six.unichr(58)), P7Rx, P7Rm)
-		msnweather['Uranusset'] = '%s%s%s%s' % (P7Sh, six.ensure_str(six.unichr(58)), P7Sx, P7Sm)
-		msnweather['Uranusculmination'] = '%s%s%s%s' % (P7Ch, six.ensure_str(six.unichr(58)), P7Cx, P7Cm)
-		msnweather['Uranusazimuth'] = '%s %s' % (P7A, six.ensure_str(six.unichr(176)))
-		msnweather['Neptunerise'] = '%s%s%s%s' % (P8Rh, six.ensure_str(six.unichr(58)), P8Rx, P8Rm)
-		msnweather['Neptuneset'] = '%s%s%s%s' % (P8Sh, six.ensure_str(six.unichr(58)), P8Sx, P8Sm)
-		msnweather['Neptuneculmination'] = '%s%s%s%s' % (P8Ch, six.ensure_str(six.unichr(58)), P8Cx, P8Cm)
-		msnweather['Neptuneazimuth'] = '%s %s' % (P8A, six.ensure_str(six.unichr(176)))
+		msnweather['Sunrise'] = '{}{}{}{}'.format(SRh, six.ensure_str(chr(58)), SRx, SRm)
+		msnweather['Sunset'] = '{}{}{}{}'.format(SSh, six.ensure_str(chr(58)), SSx, SSm)
+		msnweather['Solstice'] = '{}{}{}{}'.format(SCh, six.ensure_str(chr(58)), SCx, SCm)
+		msnweather['Mercuryrise'] = '{}{}{}{}'.format(P1Rh, six.ensure_str(chr(58)), P1Rx, P1Rm)
+		msnweather['Mercuryset'] = '{}{}{}{}'.format(P1Sh, six.ensure_str(chr(58)), P1Sx, P1Sm)
+		msnweather['Mercuryculmination'] = '{}{}{}{}'.format(P1Ch, six.ensure_str(chr(58)), P1Cx, P1Cm)
+		msnweather['Mercuryazimuth'] = '{} {}'.format(P1A, six.ensure_str(chr(176)))
+		msnweather['Venusrise'] = '{}{}{}{}'.format(P2Rh, six.ensure_str(chr(58)), P2Rx, P2Rm)
+		msnweather['Venusset'] = '{}{}{}{}'.format(P2Sh, six.ensure_str(chr(58)), P2Sx, P2Sm)
+		msnweather['Venusculmination'] = '{}{}{}{}'.format(P2Ch, six.ensure_str(chr(58)), P2Cx, P2Cm)
+		msnweather['Venusazimuth'] = '{} {}'.format(P2A, six.ensure_str(chr(176)))
+		msnweather['Marsrise'] = '{}{}{}{}'.format(P4Rh, six.ensure_str(chr(58)), P4Rx, P4Rm)
+		msnweather['Marsset'] = '{}{}{}{}'.format(P4Sh, six.ensure_str(chr(58)), P4Sx, P4Sm)
+		msnweather['Marsculmination'] = '{}{}{}{}'.format(P4Ch, six.ensure_str(chr(58)), P4Cx, P4Cm)
+		msnweather['Marsazimuth'] = '{} {}'.format(P4A, six.ensure_str(chr(176)))
+		msnweather['Jupiterrise'] = '{}{}{}{}'.format(P5Rh, six.ensure_str(chr(58)), P5Rx, P5Rm)
+		msnweather['Jupiterset'] = '{}{}{}{}'.format(P5Sh, six.ensure_str(chr(58)), P5Sx, P5Sm)
+		msnweather['Jupiterculmination'] = '{}{}{}{}'.format(P5Ch, six.ensure_str(chr(58)), P5Cx, P5Cm)
+		msnweather['Jupiterazimuth'] = '{} {}'.format(P5A, six.ensure_str(chr(176)))
+		msnweather['Saturnrise'] = '{}{}{}{}'.format(P6Rh, six.ensure_str(chr(58)), P6Rx, P6Rm)
+		msnweather['Saturnset'] = '{}{}{}{}'.format(P6Sh, six.ensure_str(chr(58)), P6Sx, P6Sm)
+		msnweather['Saturnculmination'] = '{}{}{}{}'.format(P6Ch, six.ensure_str(chr(58)), P6Cx, P6Cm)
+		msnweather['Saturnazimuth'] = '{} {}'.format(P6A, six.ensure_str(chr(176)))
+		msnweather['Uranusrise'] = '{}{}{}{}'.format(P7Rh, six.ensure_str(chr(58)), P7Rx, P7Rm)
+		msnweather['Uranusset'] = '{}{}{}{}'.format(P7Sh, six.ensure_str(chr(58)), P7Sx, P7Sm)
+		msnweather['Uranusculmination'] = '{}{}{}{}'.format(P7Ch, six.ensure_str(chr(58)), P7Cx, P7Cm)
+		msnweather['Uranusazimuth'] = '{} {}'.format(P7A, six.ensure_str(chr(176)))
+		msnweather['Neptunerise'] = '{}{}{}{}'.format(P8Rh, six.ensure_str(chr(58)), P8Rx, P8Rm)
+		msnweather['Neptuneset'] = '{}{}{}{}'.format(P8Sh, six.ensure_str(chr(58)), P8Sx, P8Sm)
+		msnweather['Neptuneculmination'] = '{}{}{}{}'.format(P8Ch, six.ensure_str(chr(58)), P8Cx, P8Cm)
+		msnweather['Neptuneazimuth'] = '{} {}'.format(P8A, six.ensure_str(chr(176)))
 		msnweather['Moondist'] = _('%s km') % Mdist
-		msnweather['Moonazimuth'] = '%s %s' % (MA, six.ensure_str(six.unichr(176)))
-		msnweather['Moonrise'] = '%s%s%s%s' % (MRh, six.ensure_str(six.unichr(58)), MRx, MRm)
-		msnweather['Moonset'] = '%s%s%s%s' % (MSh, six.ensure_str(six.unichr(58)), MSx, MSm)
-		msnweather['Moonculmination'] = '%s%s%s%s' % (MCh, six.ensure_str(six.unichr(58)), MCx, MCm)
+		msnweather['Moonazimuth'] = '{} {}'.format(MA, six.ensure_str(chr(176)))
+		msnweather['Moonrise'] = '{}{}{}{}'.format(MRh, six.ensure_str(chr(58)), MRx, MRm)
+		msnweather['Moonset'] = '{}{}{}{}'.format(MSh, six.ensure_str(chr(58)), MSx, MSm)
+		msnweather['Moonculmination'] = '{}{}{}{}'.format(MCh, six.ensure_str(chr(58)), MCx, MCm)
 		msnweather['Moonphase'] = '%s' % phase
-		msnweather['Moonlight'] = '%s %s' % (light, six.ensure_str(six.unichr(37)))
+		msnweather['Moonlight'] = '{} {}'.format(light, six.ensure_str(chr(37)))
 		msnweather['PiconMoon'] = '%s' % pic
 #
 		if self.type == self.VFD:

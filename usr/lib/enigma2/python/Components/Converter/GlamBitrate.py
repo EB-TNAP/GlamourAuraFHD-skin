@@ -2,7 +2,6 @@
 #	Modded and recoded by MCelliotG for use in Glamour skins or standalone, added Python3 support
 #	If you use this Converter for other skins and rename it, please keep the lines above adding your credits below
 
-from __future__ import absolute_import
 import six
 from Components.Converter.Converter import Converter
 from enigma import iServiceInformation, iPlayableService, eTimer
@@ -14,7 +13,7 @@ if os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/BitrateViewer/bitr
 else:
 	binaryfound = False
 
-class GlamBitrate(Converter, object):
+class GlamBitrate(Converter):
 	VPID = 0
 	APID = 1
 	FORMAT = 2

@@ -3,7 +3,6 @@
 #	Based on CaidInfo2 converter coded by bigroma & 2boom
 #	If you use this Converter for other skins and rename it, please keep the lines above adding your credits below
 
-from __future__ import absolute_import
 from Components.Converter.Converter import Converter
 from enigma import iServiceInformation, iPlayableService
 from Components.Element import cached
@@ -705,7 +704,7 @@ class GlamourAccess(Poll, Converter):
 							return ecm_time
 
 						csi = "Service with %s encryption" % (caidtxt)
-						casi = "Service with %s encryption (%s)" % (caidtxt, caidlist)
+						casi = "Service with {} encryption ({})".format(caidtxt, caidlist)
 						protocol = ecm_info.get("protocol", "")
 						port = ecm_info.get("port", "")
 						source = ecm_info.get("source", "")
@@ -788,20 +787,20 @@ class GlamourAccess(Poll, Converter):
 								ecminfo = "FTA service"
 							elif int(config.usage.show_cryptoinfo.value) > 0:
 								if source == "emu":
-									ecminfo = "CA: %s:%s  PID:%s  Source: %s@%s  Ecm Time: %s" % (caid, prov, pid, source, frm, ecm_time)
+									ecminfo = "CA: {}:{}  PID:{}  Source: {}@{}  Ecm Time: {}".format(caid, prov, pid, source, frm, ecm_time)
 								elif reader != "" and source == "net" and port != "":
-									ecminfo = "CA: %s:%s  PID:%s  Reader: %s@%s  Prtc:%s (%s)  Source: %s:%s %s  Ecm Time: %s  %s" % (caid, prov, pid, reader, frm, protocol, source, server, port, hops, ecm_time, provider)
+									ecminfo = "CA: {}:{}  PID:{}  Reader: {}@{}  Prtc:{} ({})  Source: {}:{} {}  Ecm Time: {}  {}".format(caid, prov, pid, reader, frm, protocol, source, server, port, hops, ecm_time, provider)
 								elif reader != "" and source == "net" and not "fta" in protocol:
-									ecminfo = "CA: %s:%s  PID:%s  Reader: %s@%s  Ptrc:%s (%s)  Source: %s %s  Ecm Time: %s  %s" % (caid, prov, pid, reader, frm, protocol, source, server, hops, ecm_time, provider)
+									ecminfo = "CA: {}:{}  PID:{}  Reader: {}@{}  Ptrc:{} ({})  Source: {} {}  Ecm Time: {}  {}".format(caid, prov, pid, reader, frm, protocol, source, server, hops, ecm_time, provider)
 								elif reader != "" and source != "net":
-									ecminfo = "CA: %s:%s  PID:%s  Reader: %s@%s  Prtc:%s (local) - %s %s  Ecm Time: %s  %s" % (caid, prov, pid, reader, frm, protocol, source, hops, ecm_time, provider)
+									ecminfo = "CA: {}:{}  PID:{}  Reader: {}@{}  Prtc:{} (local) - {} {}  Ecm Time: {}  {}".format(caid, prov, pid, reader, frm, protocol, source, hops, ecm_time, provider)
 								elif server == "" and port == "" and protocol != "":
-									ecminfo = "CA: %s:%s  PID:%s  Prtc: %s (%s) %s Ecm Time: %s" % (caid, prov, pid, protocol, source, hops, ecm_time)
+									ecminfo = "CA: {}:{}  PID:{}  Prtc: {} ({}) {} Ecm Time: {}".format(caid, prov, pid, protocol, source, hops, ecm_time)
 								elif server == "" and port == "" and protocol == "":
-									ecminfo = "CA: %s:%s  PID:%s  Source: %s  Ecm Time: %s" % (caid, prov, pid, source, ecm_time)
+									ecminfo = "CA: {}:{}  PID:{}  Source: {}  Ecm Time: {}".format(caid, prov, pid, source, ecm_time)
 								else:
 									try:
-										ecminfo = "CA: %s:%s  PID:%s  Addr:%s:%s  Prtc: %s (%s) %s  Ecm Time: %s  %s" % (caid, prov, pid, server, port, protocol, source, hops, ecm_time, provider)
+										ecminfo = "CA: {}:{}  PID:{}  Addr:{}:{}  Prtc: {} ({}) {}  Ecm Time: {}  {}".format(caid, prov, pid, server, port, protocol, source, hops, ecm_time, provider)
 									except:
 										pass
 							else:
@@ -812,21 +811,21 @@ class GlamourAccess(Poll, Converter):
 								ecminfo = "FTA service"
 							elif int(config.usage.show_cryptoinfo.value) > 0:
 								if source == "emu":
-									ecminfo = "%s:%s - %s - %s" % (caid, prov, source, caidname)
+									ecminfo = "{}:{} - {} - {}".format(caid, prov, source, caidname)
 								elif server == "" and port == "":
-									ecminfo = "%s:%s - %s - %s" % (caid, prov, source, ecm_time)
+									ecminfo = "{}:{} - {} - {}".format(caid, prov, source, ecm_time)
 								else:
 									try:
 										if reader != "":
 											if hop != "":
-												ecminfo = "%s:%s - %s (%s) - %s" % (caid, prov, frm, hop, ecm_time)
+												ecminfo = "{}:{} - {} ({}) - {}".format(caid, prov, frm, hop, ecm_time)
 											else:
-												ecminfo = "%s:%s - %s - %s" % (caid, prov, frm, ecm_time)
+												ecminfo = "{}:{} - {} - {}".format(caid, prov, frm, ecm_time)
 										else:
 											if hop != "":
-												ecminfo = "%s:%s - %s (%s) - %s" % (caid, prov, server, hop, ecm_time)
+												ecminfo = "{}:{} - {} ({}) - {}".format(caid, prov, server, hop, ecm_time)
 											else:
-												ecminfo = "%s:%s - %s - %s" % (caid, prov, server, ecm_time)
+												ecminfo = "{}:{} - {} - {}".format(caid, prov, server, ecm_time)
 									except:
 										pass
 							else:
@@ -837,26 +836,26 @@ class GlamourAccess(Poll, Converter):
 								ecminfo = "FTA service"
 							elif int(config.usage.show_cryptoinfo.value) > 0:
 								if source == "emu" or server == "" and port == "":
-									ecminfo = "%s [%s:%s - %s - %s]" % (csi, caid, prov, source, ecm_time)
+									ecminfo = "{} [{}:{} - {} - {}]".format(csi, caid, prov, source, ecm_time)
 								else:
 									try:
 										if reader != "":
 											if hop != "":
-												ecminfo = "%s [%s:%s - %s@%s - %s]" % (csi, caid, prov, reader, hop, ecm_time)
+												ecminfo = "{} [{}:{} - {}@{} - {}]".format(csi, caid, prov, reader, hop, ecm_time)
 											else:
-												ecminfo = "%s [%s:%s - %s - %s]" % (csi, caid, prov, reader, ecm_time)
+												ecminfo = "{} [{}:{} - {} - {}]".format(csi, caid, prov, reader, ecm_time)
 										else:
 											if hop != "":
-												ecminfo = "%s [%s:%s - %s@%s - %s]" % (csi, caid, prov, server, hop, ecm_time)
+												ecminfo = "{} [{}:{} - {}@{} - {}]".format(csi, caid, prov, server, hop, ecm_time)
 											else:
-												ecminfo = "%s [%s:%s - %s - %s]" % (csi, caid, prov, server, ecm_time)
+												ecminfo = "{} [{}:{} - {} - {}]".format(csi, caid, prov, server, ecm_time)
 									except:
 										pass
 							else:
 								ecminfo = csi
 
 					elif self.type == self.ECMINFO or self.type == self.FORMAT and self.sfmt.count("%") > 3:
-						ecminfo = "Service with %s encryption (%s)" % (caidtxt, caidlist)
+						ecminfo = "Service with {} encryption ({})".format(caidtxt, caidlist)
 					elif self.type == self.SHORTINFO or self.type == self.CASINFO:
 						ecminfo = "Service with %s encryption" % caidtxt
 				elif self.type == self.ECMINFO or self.type == self.SHORTINFO or self.type == self.CASINFO or self.type == self.FORMAT and self.sfmt.count("%") > 3:
@@ -903,7 +902,7 @@ class GlamourAccess(Poll, Converter):
 			elif serlist is None and camdlist is None:
 				serlist = ""
 				camdlist = ""
-			return "%s %s" % (serlist, camdlist)
+			return "{} {}".format(serlist, camdlist)
 #OE-A
 		if os.path.exists("/etc/image-version") and not os.path.exists("/etc/.emustart"):
 			for line in open("/etc/image-version"):
@@ -968,22 +967,22 @@ class GlamourAccess(Poll, Converter):
 								cam2 = "/" + cam2
 					except:
 						pass
-			return "%s%s" % (cam1, cam2)
+			return "{}{}".format(cam1, cam2)
 #BLACKHOLE
 		if os.path.exists("/etc/CurrentDelCamName"):
 			try:
-				camdlist = open("/etc/CurrentDelCamName", "r")
+				camdlist = open("/etc/CurrentDelCamName")
 			except:
 				return None
 		if os.path.exists("/etc/CurrentBhCamName"):
 			try:
-				camdlist = open("/etc/CurrentBhCamName", "r")
+				camdlist = open("/etc/CurrentBhCamName")
 			except:
 				return None
 # DE-OpenBlackHole
 		if os.path.exists("/etc/BhFpConf"):
 			try:
-				camdlist = open("/etc/BhCamConf", "r")
+				camdlist = open("/etc/BhCamConf")
 			except:
 				return None
 #HDMU
@@ -996,13 +995,13 @@ class GlamourAccess(Poll, Converter):
 # Domica
 		if os.path.exists("/etc/active_emu.list"):
 			try:
-				camdlist = open("/etc/active_emu.list", "r")
+				camdlist = open("/etc/active_emu.list")
 			except:
 				return None
 # Egami 
 		if os.path.exists("/tmp/egami.inf"):
 			try:
-				lines = open("/tmp/egami.inf", "r").readlines()
+				lines = open("/tmp/egami.inf").readlines()
 				for line in lines:
 					item = line.split(":", 1)
 					if item[0] == "Current emulator":
@@ -1012,19 +1011,19 @@ class GlamourAccess(Poll, Converter):
 # OoZooN
 		if os.path.exists("/tmp/cam.info"):
 			try:
-				camdlist = open("/tmp/cam.info", "r")
+				camdlist = open("/tmp/cam.info")
 			except:
 				return None
 # Dream Elite
 		if os.path.exists("/usr/bin/emuactive"):
 			try:
-				camdlist = open("/usr/bin/emuactive", "r")
+				camdlist = open("/usr/bin/emuactive")
 			except:
 				return None
 # Merlin2
 		if os.path.exists("/etc/clist.list"):
 			try:
-				camdlist = open("/etc/clist.list", "r")
+				camdlist = open("/etc/clist.list")
 			except:
 				return None
 # TS-Panel
@@ -1062,7 +1061,7 @@ class GlamourAccess(Poll, Converter):
 				pass
 		else:
 			emu = "N/A"
-		return "%s %s" % (cardserver.split("\n")[0], emu.split("\n")[0])
+		return "{} {}".format(cardserver.split("\n")[0], emu.split("\n")[0])
 
 
 
@@ -1087,7 +1086,7 @@ class GlamourAccess(Poll, Converter):
 			for caid in caids:
 				caid = self.int2hex(caid).upper().zfill(4)
 				if len(caids) > 1:
-					caidlist = ", ".join(("{:04x}".format(x) for x in caids)).upper()
+					caidlist = ", ".join(f"{x:04x}" for x in caids).upper()
 				else:
 					caidlist += caid
 		return caidlist
@@ -1145,7 +1144,7 @@ class GlamourAccess(Poll, Converter):
 		caidnames = self.CaidNames()
 		caidlist = ""
 		if caids and caidnames:
-			caidlist = "%s (%s)" % (caids, caidnames)
+			caidlist = "{} ({})".format(caids, caidnames)
 			if config.osd.language.value == "el_GR":
 				caidlist = "Συστήματα κωδικοποίησης: " + caidlist
 			else:
@@ -1200,7 +1199,7 @@ class GlamourAccess(Poll, Converter):
 				if ecm_mtime == old_ecm_mtime:
 					return info
 				old_ecm_mtime = ecm_mtime
-				ecmf = open(ecmpath, "r")
+				ecmf = open(ecmpath)
 				ecm = ecmf.readlines()
 			except:
 				old_ecm_mtime = None

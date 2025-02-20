@@ -3,7 +3,6 @@
 #	Based on NextEvents by m0rphU & LN
 #	If you use this Converter for other skins and rename it, please keep the lines above adding your credits below
 
-from __future__ import division
 from Components.Converter.Converter import Converter
 from Components.Element import cached
 from Components.VariableText import VariableText
@@ -11,7 +10,7 @@ from enigma import eLabel, eEPGCache, eServiceReference
 from time import localtime, strftime, mktime, time
 from datetime import datetime
 
-class GlamNextEvents(Converter, object):
+class GlamNextEvents(Converter):
 	Event1 = 0
 	Event2 = 1
 	Event3 = 2
